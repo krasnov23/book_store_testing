@@ -94,17 +94,21 @@ close_image.click()
 
 
 # SHOP проверка цены в магазине.
-driver.execute_script("window.open();")# открытие новой вкладки
-window_after = driver.window_handles[4]# создание переменной, где укажем путь к второй вкладке (window_handles[1]) ; здесь будет 1, так как отсчёт начинается с 0
-driver.switch_to.window(window_after) # переключим область действия драйвера на новую вкладку, теперь дальнейшие элементы драйвер будет искать уже там
+#driver.execute_script("window.open();")# открытие новой вкладки
+#window_after = driver.window_handles[4]# создание переменной, где укажем путь к второй вкладке (window_handles[1]) ; здесь будет 1, так как отсчёт начинается с 0
+#driver.switch_to.window(window_after) # переключим область действия драйвера на новую вкладку, теперь дальнейшие элементы драйвер будет искать уже там
+driver = webdriver.Chrome(executable_path='C:/chromedriver.exe')
+driver.maximize_window()
 driver.get("http://practice.automationtesting.in/")
 
 shop_btn = driver.find_element(By.XPATH,'//*[@id="menu-item-40"]/a').click()
-html_wd = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[4]/a[2]')
-driver.execute_script("return arguments[0].scrollIntoView(true);", html_wd)
+#html_wd = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[4]/a[2]')
+#driver.execute_script("return arguments[0].scrollIntoView(true);", html_wd)
 html_wd_click = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="content"]/ul/li[4]/a[2]')) )
 
-time.sleep(2)
+html_wd = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[4]/a[2]').click()
+
+time.sleep(3)
 
 items = driver.find_element(By.CLASS_NAME,'cartcontents')
 assert items.text == '1 Item'
@@ -117,6 +121,60 @@ subtotal = WebDriverWait(driver, 5).until(EC.text_to_be_present_in_element((By.X
 '//*[@id="page-34"]/div/div[1]/div/div/table/tbody/tr[1]/td/span'), "180.00"))
 total = WebDriverWait(driver, 5).until(EC.text_to_be_present_in_element((By.XPATH,
 '//*[@id="page-34"]/div/div[1]/div/div/table/tbody/tr[3]/td/strong/span'), "189.00"))
+
+# SHOP работа в корзине
+
+driver.execute_script("window.open();")# открытие новой вкладки
+window_after = driver.window_handles[1]# создание переменной, где укажем путь к второй вкладке (window_handles[1]) ; здесь будет 1, так как отсчёт начинается с 0
+driver.switch_to.window(window_after) # переключим область действия драйвера на новую вкладку, теперь дальнейшие элементы драйвер будет искать уже там
+driver.get("http://practice.automationtesting.in/")
+
+
+shop_btn = driver.find_element(By.XPATH,'//*[@id="menu-item-40"]/a').click()
+driver.execute_script("window.scrollBy(0, 300);")
+html_wd = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[4]/a[2]').click()
+html5_webd = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[4]/a[2]').click()
+time.sleep(3)
+
+js_data_structures = driver.find_element(By.XPATH,'//*[@id="content"]/ul/li[5]/a[2]').click()
+items_btn = driver.find_element(By.XPATH,'//*[@id="wpmenucartli"]/a/span[2]').click()
+
+time.sleep(2)
+delete_book = driver.find_element(By.XPATH,'//*[@id="page-34"]/div/div[1]/form/table/tbody/tr[1]/td[1]/a').click()
+
+und_btn = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="page-34"]/div/div[1]/div[1]/a')) )
+und_btn.click()
+
+
+quantity_js_field = driver.find_element(By.XPATH,'//*[@id="page-34"]/div/div[1]/form/table/tbody/tr[1]/td[5]/div/input')
+# очищаем поле
+quantity_js_field.clear()
+quantity_js_field.send_keys(3)
+update_basket_btn = driver.find_element(By.XPATH,'//*[@id="page-34"]/div/div[1]/form/table/tbody/tr[3]/td/input[1]').click()
+
+quantity_js_field = driver.find_element(By.XPATH,'//*[@id="page-34"]/div/div[1]/form/table/tbody/tr[1]/td[5]/div/input')
+amount_of_book = quantity_js_field.get_attribute('value')
+assert amount_of_book == '3'
+
+time.sleep(5)
+apply_coupon = WebDriverWait(driver, 20,).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '.coupon > .button')) )
+apply_coupon.click()
+
+#apply_coupon_btn = driver.find_element(By.CSS_SELECTOR,'.coupon > .button').click()
+time.sleep(3)
+please_enter_coupon_msg = driver.find_element(By.XPATH,'//*[@id="page-34"]/div/div[1]/ul/li')
+#please_enter_coupon_msg = driver.find_element(By.CSS_SELECTOR,'.woocommerce-error > li')
+
+assert please_enter_coupon_msg.text == 'Please enter a coupon code.'
+
+
+
+
+
+
+
+
+
 
 
 
